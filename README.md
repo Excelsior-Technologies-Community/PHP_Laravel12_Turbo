@@ -1,8 +1,12 @@
 #  PHP_Laravel12_Turbo
 
-![Laravel](https://img.shields.io/badge/Laravel-12-red)
-![PHP](https://img.shields.io/badge/PHP-8.2%2B-blue)
-![Turbo](https://img.shields.io/badge/Hotwire-Turbo-green)
+<p align="center">
+<a href="#"><img src="https://img.shields.io/badge/Laravel-12-red" alt="Laravel Version"></a>
+<a href="#"><img src="https://img.shields.io/badge/PHP-8.2%2B-blue" alt="PHP Version"></a>
+<a href="#"><img src="https://img.shields.io/badge/Hotwire-Turbo-green" alt="Turbo Laravel"></a>
+<a href="#"><img src="https://img.shields.io/badge/SPA--Like-Navigation-purple" alt="SPA Like"></a>
+<a href="#"><img src="https://img.shields.io/badge/CRUD-Posts-orange" alt="CRUD"></a>
+</p>
 
 ---
 
@@ -74,6 +78,7 @@ database/
 
 ```bash
 composer create-project laravel/laravel turbo-app
+
 php artisan serve
 ```
 
@@ -85,6 +90,7 @@ Open: http://127.0.0.1:8000
 
 ```bash
 composer require hotwired-laravel/turbo-laravel
+
 php artisan turbo:install
 ```
 
