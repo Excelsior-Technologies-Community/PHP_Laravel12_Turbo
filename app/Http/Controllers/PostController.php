@@ -7,53 +7,212 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    // Display all posts on the index page
-    public function index()
+    /**
+     * Display posts with search, filtering and pagination.
+     */
+    public function index(Request $request)
     {
-        return view('posts.index', [
-            'posts' => Post::latest()->get() // Fetch posts ordered by latest first
-        ]);
+        $query = Post::query();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Search
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Status Filter
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Date Filter
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->input('date'));
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Paginated Results
+        |--------------------------------------------------------------------------
+        */
+
+        $posts = $query
+            ->latest()
+            ->paginate(5)
+            ->withQueryString();
+
+        return view('posts.index', compact('posts'));
     }
 
-    // Show create post form
+    /**
+     * Show create post form.
+     */
     public function create()
     {
         return view('posts.create');
     }
 
-    // Store new post in database
+    /**
+     * Store new post.
+     */
     public function store(Request $request)
     {
-        Post::create($request->validate([
-            'title' => 'required',        
-            'description' => 'nullable'  
-        ]));
+        $validated = $request->validate([
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+            ],
 
-        return redirect()->route('posts.index'); // Redirect to posts list
+            'description' => [
+                'nullable',
+                'string',
+            ],
+
+            'status' => [
+                'required',
+                'in:published,draft',
+            ],
+        ]);
+
+        Post::create($validated);
+
+        return redirect()
+            ->route('posts.index')
+            ->with(
+                'success',
+                'Post created successfully!'
+            );
     }
 
-    // Show edit form for selected post
+    /**
+     * Display individual post.
+     */
+    public function show(Post $post)
+    {
+        return view(
+            'posts.show',
+            compact('post')
+        );
+    }
+
+    /**
+     * Show edit form.
+     */
     public function edit(Post $post)
     {
-        return view('posts.edit', compact('post'));
+        return view(
+            'posts.edit',
+            compact('post')
+        );
     }
 
-    // Update selected post data
-    public function update(Request $request, Post $post)
-    {
-        $post->update($request->validate([
-            'title' => 'required',       
-            'description' => 'nullable'  
-        ]));
+    /**
+     * Update post.
+     */
+    public function update(
+        Request $request,
+        Post $post
+    ) {
+        $validated = $request->validate([
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+            ],
 
-        return redirect()->route('posts.index'); // Redirect after update
+            'description' => [
+                'nullable',
+                'string',
+            ],
+
+            'status' => [
+                'required',
+                'in:published,draft',
+            ],
+        ]);
+
+        $post->update($validated);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Turbo Stream Response
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->wantsTurboStream()) {
+            return response()
+                ->view(
+                    'posts.streams.update',
+                    compact('post')
+                )
+                ->header(
+                    'Content-Type',
+                    'text/vnd.turbo-stream.html'
+                );
+        }
+
+        return redirect()
+            ->route('posts.index')
+            ->with(
+                'success',
+                'Post updated successfully!'
+            );
     }
 
-    // Delete selected post
-    public function destroy(Post $post)
-    {
-        $post->delete(); // Remove post from database
+    /**
+     * Delete post.
+     */
+    public function destroy(
+        Request $request,
+        Post $post
+    ) {
+        $postId = $post->id;
 
-        return redirect()->route('posts.index'); // Redirect back to list
+        $post->delete();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Turbo Stream Response
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->wantsTurboStream()) {
+            return response()
+                ->view(
+                    'posts.streams.destroy',
+                    compact('postId')
+                )
+                ->header(
+                    'Content-Type',
+                    'text/vnd.turbo-stream.html'
+                );
+        }
+
+        return redirect()
+            ->route('posts.index')
+            ->with(
+                'success',
+                'Post deleted successfully!'
+            );
     }
 }
