@@ -1,10 +1,34 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostController;
+use Illuminate\Support\Facades\Route;
 
-// Create all CRUD routes (index, create, store, show, edit, update, destroy) for posts
+/*
+|--------------------------------------------------------------------------
+| Dashboard
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/dashboard', [
+    DashboardController::class,
+    'index'
+])->name('dashboard');
+
+/*
+|--------------------------------------------------------------------------
+| Posts
+|--------------------------------------------------------------------------
+*/
+
 Route::resource('posts', PostController::class);
 
-// Redirect homepage (/) to posts listing page
-Route::get('/', fn () => redirect('/posts'));
+/*
+|--------------------------------------------------------------------------
+| Homepage
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/', function () {
+    return redirect()->route('dashboard');
+});
