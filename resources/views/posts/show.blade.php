@@ -36,16 +36,20 @@
 
         </div>
 
+
+        {{-- Post Actions --}}
         <div style="margin-top:15px;">
 
             {{-- View Post --}}
             <a
                 href="{{ route('posts.show', $post) }}"
-                class="btn btn-secondary">
+                class="btn btn-secondary"
+                data-turbo-frame="_top">
 
                 View
 
             </a>
+
 
             {{-- Edit Post --}}
             <a
@@ -55,6 +59,7 @@
                 Edit
 
             </a>
+
 
             {{-- Delete Post --}}
             <form
