@@ -1,6 +1,7 @@
 <turbo-stream
     action="replace"
-    target="post-{{ $post->id }}">
+    target="post-{{ $post->id }}"
+>
 
     <template>
 
@@ -10,15 +11,18 @@
 
 </turbo-stream>
 
+
 <turbo-stream
     action="replace"
-    target="turbo-notification">
+    target="turbo-notification"
+>
 
     <template>
 
         <div
             id="turbo-notification"
-            class="alert alert-success">
+            class="alert alert-success"
+        >
 
             Post updated successfully!
 
