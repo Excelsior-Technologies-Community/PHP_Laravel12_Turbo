@@ -5,14 +5,22 @@
 <div class="dashboard-header">
 
     <div>
-        <h2>Post Statistics Dashboard</h2>
+
+        <h2>
+            Post Statistics Dashboard
+        </h2>
 
         <p class="dashboard-subtitle">
             Monitor post activity and content status
         </p>
+
     </div>
 
-    <a href="{{ route('posts.index') }}" class="btn btn-primary">
+
+    <a
+        href="{{ route('posts.index') }}"
+        class="btn btn-primary"
+    >
         Manage Posts
     </a>
 
@@ -20,12 +28,23 @@
 
 <hr>
 
+
+{{-- =========================================================
+     STATISTICS
+========================================================= --}}
+
 <div class="stats-grid">
 
+    {{-- Total --}}
+
     <div class="stat-card">
-        <div class="stat-icon">📊</div>
+
+        <div class="stat-icon">
+            📊
+        </div>
 
         <div>
+
             <div class="stat-label">
                 Total Posts
             </div>
@@ -33,13 +52,22 @@
             <div class="stat-number">
                 {{ $totalPosts }}
             </div>
+
         </div>
+
     </div>
 
+
+    {{-- Published --}}
+
     <div class="stat-card">
-        <div class="stat-icon">🟢</div>
+
+        <div class="stat-icon">
+            🟢
+        </div>
 
         <div>
+
             <div class="stat-label">
                 Published
             </div>
@@ -47,13 +75,22 @@
             <div class="stat-number">
                 {{ $publishedPosts }}
             </div>
+
         </div>
+
     </div>
 
+
+    {{-- Draft --}}
+
     <div class="stat-card">
-        <div class="stat-icon">📝</div>
+
+        <div class="stat-icon">
+            📝
+        </div>
 
         <div>
+
             <div class="stat-label">
                 Drafts
             </div>
@@ -61,13 +98,22 @@
             <div class="stat-number">
                 {{ $draftPosts }}
             </div>
+
         </div>
+
     </div>
 
+
+    {{-- Today --}}
+
     <div class="stat-card">
-        <div class="stat-icon">📅</div>
+
+        <div class="stat-icon">
+            📅
+        </div>
 
         <div>
+
             <div class="stat-label">
                 Created Today
             </div>
@@ -75,25 +121,135 @@
             <div class="stat-number">
                 {{ $todayPosts }}
             </div>
+
         </div>
+
+    </div>
+
+
+    {{-- This Week --}}
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📆
+        </div>
+
+        <div>
+
+            <div class="stat-label">
+                This Week
+            </div>
+
+            <div class="stat-number">
+                {{ $thisWeekPosts }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- This Month --}}
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            🗓️
+        </div>
+
+        <div>
+
+            <div class="stat-label">
+                This Month
+            </div>
+
+            <div class="stat-number">
+                {{ $thisMonthPosts }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- Published Percentage --}}
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📈
+        </div>
+
+        <div>
+
+            <div class="stat-label">
+                Published %
+            </div>
+
+            <div class="stat-number">
+                {{ $publishedPercentage }}%
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- Draft Percentage --}}
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📋
+        </div>
+
+        <div>
+
+            <div class="stat-label">
+                Draft %
+            </div>
+
+            <div class="stat-number">
+
+                {{ $totalPosts > 0
+                    ? round(($draftPosts / $totalPosts) * 100, 1)
+                    : 0
+                }}%
+
+            </div>
+
+        </div>
+
     </div>
 
 </div>
 
+
 <hr>
+
+
+{{-- =========================================================
+     LATEST POST
+========================================================= --}}
 
 <div class="dashboard-section">
 
     <div class="section-header">
 
-        <h2>Latest Post</h2>
+        <h2>
+            Latest Post
+        </h2>
 
-        <a href="{{ route('posts.create') }}"
-           class="btn btn-primary">
+        <a
+            href="{{ route('posts.create') }}"
+            class="btn btn-primary"
+        >
             + Create Post
         </a>
 
     </div>
+
 
     @if($latestPost)
 
@@ -110,13 +266,18 @@
                 </p>
 
                 <small>
+
                     Created
                     {{ $latestPost->created_at->format('d M Y, h:i A') }}
+
                 </small>
 
             </div>
 
-            <span class="status-badge status-{{ $latestPost->status }}">
+
+            <span
+                class="status-badge status-{{ $latestPost->status }}"
+            >
                 {{ ucfirst($latestPost->status) }}
             </span>
 
@@ -125,18 +286,92 @@
     @else
 
         <div class="empty-state">
+
             No posts have been created yet.
+
         </div>
 
     @endif
 
 </div>
 
+
 <hr>
+
+
+{{-- =========================================================
+     OLDEST POST
+========================================================= --}}
 
 <div class="dashboard-section">
 
-    <h2>Recent Activity</h2>
+    <div class="section-header">
+
+        <h2>
+            Oldest Post
+        </h2>
+
+    </div>
+
+
+    @if($oldestPost)
+
+        <div class="latest-post">
+
+            <div>
+
+                <h3>
+                    {{ $oldestPost->title }}
+                </h3>
+
+                <p>
+                    {{ $oldestPost->description ?: 'No description provided.' }}
+                </p>
+
+                <small>
+
+                    Created
+                    {{ $oldestPost->created_at->format('d M Y, h:i A') }}
+
+                </small>
+
+            </div>
+
+
+            <span
+                class="status-badge status-{{ $oldestPost->status }}"
+            >
+                {{ ucfirst($oldestPost->status) }}
+            </span>
+
+        </div>
+
+    @else
+
+        <div class="empty-state">
+
+            No posts available.
+
+        </div>
+
+    @endif
+
+</div>
+
+
+<hr>
+
+
+{{-- =========================================================
+     RECENT ACTIVITY
+========================================================= --}}
+
+<div class="dashboard-section">
+
+    <h2>
+        Recent Activity
+    </h2>
+
 
     @forelse($recentPosts as $post)
 
@@ -149,12 +384,17 @@
                 </strong>
 
                 <div class="activity-time">
+
                     {{ $post->created_at->diffForHumans() }}
+
                 </div>
 
             </div>
 
-            <span class="status-badge status-{{ $post->status }}">
+
+            <span
+                class="status-badge status-{{ $post->status }}"
+            >
                 {{ ucfirst($post->status) }}
             </span>
 
@@ -163,7 +403,9 @@
     @empty
 
         <div class="empty-state">
+
             No recent activity.
+
         </div>
 
     @endforelse

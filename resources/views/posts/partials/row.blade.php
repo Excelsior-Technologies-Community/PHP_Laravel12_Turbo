@@ -1,25 +1,34 @@
 <turbo-frame id="post-{{ $post->id }}">
 
-    <div class="card">
+    <div class="card post-card">
 
-        <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:flex-start;
-            gap:15px;
-        ">
+        <div class="post-header">
 
-            <div style="flex:1;">
+            <div class="post-select">
+
+                <input
+                    type="checkbox"
+                    name="post_ids[]"
+                    value="{{ $post->id }}"
+                    class="post-checkbox"
+                >
+
+            </div>
+
+
+            <div class="post-content">
 
                 <h3>
                     {{ $post->title }}
                 </h3>
 
                 <p>
+
                     {{ $post->description ?: 'No description provided.' }}
+
                 </p>
 
-                <small style="color:#94a3b8;">
+                <small>
 
                     Created:
                     {{ $post->created_at->format('d M Y, h:i A') }}
@@ -28,39 +37,45 @@
 
             </div>
 
-            <span class="status-badge status-{{ $post->status }}">
 
-                {{ ucfirst($post->status) }}
+            <div class="post-meta">
 
-            </span>
+                <span
+                    class="status-badge status-{{ $post->status }}"
+                >
+                    {{ ucfirst($post->status) }}
+                </span>
+
+            </div>
 
         </div>
 
-        <div style="margin-top:15px;">
 
-            {{-- View Post --}}
+        <div class="post-actions">
+
             <a
                 href="{{ route('posts.show', $post) }}"
-                class="btn btn-secondary">
-
+                class="btn btn-secondary"
+            >
                 View
-
             </a>
 
-            {{-- Edit Post --}}
+
             <a
                 href="{{ route('posts.edit', $post) }}"
-                class="btn btn-warning">
-
+                class="btn btn-warning"
+            >
                 Edit
-
             </a>
 
-            {{-- Delete Post --}}
+
             <form
                 method="POST"
                 action="{{ route('posts.destroy', $post) }}"
-                style="display:inline;">
+                data-turbo="true"
+                onsubmit="return confirm('Delete this post?');"
+                style="display:inline;"
+            >
 
                 @csrf
 
@@ -69,10 +84,8 @@
                 <button
                     type="submit"
                     class="btn btn-danger"
-                    onclick="return confirm('Are you sure you want to delete this post?')">
-
+                >
                     Delete
-
                 </button>
 
             </form>
