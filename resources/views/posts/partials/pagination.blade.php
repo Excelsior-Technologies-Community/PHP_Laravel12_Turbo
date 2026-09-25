@@ -2,31 +2,11 @@
 
     <div class="pagination">
 
-        {{-- Previous Page --}}
-        @if($posts->onFirstPage())
-
-            <span>
-                Previous
-            </span>
-
-        @else
-
-            <a
-                href="{{ $posts->previousPageUrl() }}"
-                data-turbo-frame="post-search-results">
-
-                Previous
-
-            </a>
-
-        @endif
-
-
-        {{-- Page Numbers --}}
-        @foreach($posts->getUrlRange(
-            max(1, $posts->currentPage() - 2),
-            min($posts->lastPage(), $posts->currentPage() + 2)
-        ) as $page => $url)
+        @for(
+            $page = 1;
+            $page <= $posts->lastPage();
+            $page++
+        )
 
             @if($page == $posts->currentPage())
 
@@ -37,36 +17,15 @@
             @else
 
                 <a
-                    href="{{ $url }}"
-                    data-turbo-frame="post-search-results">
-
+                    href="{{ $posts->url($page) }}"
+                    data-turbo-frame="post-search-results"
+                >
                     {{ $page }}
-
                 </a>
 
             @endif
 
-        @endforeach
-
-
-        {{-- Next Page --}}
-        @if($posts->hasMorePages())
-
-            <a
-                href="{{ $posts->nextPageUrl() }}"
-                data-turbo-frame="post-search-results">
-
-                Next
-
-            </a>
-
-        @else
-
-            <span>
-                Next
-            </span>
-
-        @endif
+        @endfor
 
     </div>
 

@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     /**
-     * Display the post statistics dashboard.
+     * Dashboard
      */
     public function index()
     {
@@ -19,9 +20,32 @@ class DashboardController extends Controller
 
         $todayPosts = Post::whereDate('created_at', today())->count();
 
-        $latestPost = Post::latest()->first();
+        $thisWeekPosts = Post::whereBetween('created_at', [
+            Carbon::now()->startOfWeek(),
+            Carbon::now()->endOfWeek(),
+        ])->count();
 
-        $recentPosts = Post::latest()
+        $thisMonthPosts = Post::whereBetween('created_at', [
+            Carbon::now()->startOfMonth(),
+            Carbon::now()->endOfMonth(),
+        ])->count();
+
+        $publishedPercentage = $totalPosts > 0
+            ? round(($publishedPosts / $totalPosts) * 100, 1)
+            : 0;
+
+        $draftPercentage = $totalPosts > 0
+            ? round(($draftPosts / $totalPosts) * 100, 1)
+            : 0;
+
+        // Latest post
+        $latestPost = Post::latest('created_at')->first();
+
+        // Oldest post
+        $oldestPost = Post::oldest('created_at')->first();
+
+        // Recent posts
+        $recentPosts = Post::latest('created_at')
             ->take(5)
             ->get();
 
@@ -30,7 +54,12 @@ class DashboardController extends Controller
             'publishedPosts',
             'draftPosts',
             'todayPosts',
+            'thisWeekPosts',
+            'thisMonthPosts',
+            'publishedPercentage',
+            'draftPercentage',
             'latestPost',
+            'oldestPost',
             'recentPosts'
         ));
     }
