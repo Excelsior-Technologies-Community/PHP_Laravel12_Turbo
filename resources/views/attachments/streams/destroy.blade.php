@@ -1,4 +1,4 @@
-<turbo-stream action="remove" target="post-{{ $postId }}">
+<turbo-stream action="remove" target="attachment-{{ $attachmentId }}">
 
 </turbo-stream>
 
@@ -23,7 +23,7 @@
 
     <template>
 
-        @include('partials.toast', ['message' => $toastMessage, 'type' => 'warning'])
+        @include('partials.toast', ['message' => $message, 'type' => 'warning'])
 
     </template>
 
