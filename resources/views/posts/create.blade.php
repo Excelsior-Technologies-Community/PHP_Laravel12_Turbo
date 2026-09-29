@@ -4,7 +4,7 @@
 
 <div class="top-bar">
 
-    <h2>Create Post</h2>
+    <h2>✨ Create New Post</h2>
 
     <a
         href="{{ route('posts.index') }}"
@@ -20,61 +20,104 @@
 
 <form
     method="POST"
-    action="{{ route('posts.store') }}">
+    action="{{ route('posts.store') }}"
+    enctype="multipart/form-data"
+    data-turbo="false"
+>
 
     @csrf
 
-    <label>
-        Title
-    </label>
+    <div class="form-group">
 
-    <input
-        name="title"
-        value="{{ old('title') }}"
-        placeholder="Enter post title"
-        required
-    >
+        <label>
 
-    <label>
-        Description
-    </label>
+            Title
 
-    <textarea
-        name="description"
-        placeholder="Write something..."
-    >{{ old('description') }}</textarea>
+        </label>
 
-    <label>
-        Status
-    </label>
+        <input
+            name="title"
+            value="{{ old('title') }}"
+            placeholder="Enter post title"
+            required
+        >
 
-    <select name="status">
+    </div>
 
-        <option
-            value="published"
-            @selected(old('status', 'published') === 'published')>
 
-            Published
+    <div class="form-group">
 
-        </option>
+        <label>
 
-        <option
-            value="draft"
-            @selected(old('status') === 'draft')>
+            Description
 
-            Draft
+        </label>
 
-        </option>
+        <textarea
+            name="description"
+            placeholder="Write detailed post content..."
+        >{{ old('description') }}</textarea>
 
-    </select>
+    </div>
 
-    <button
-        type="submit"
-        class="btn btn-primary">
 
-        Save Post
+    <div class="form-group">
 
-    </button>
+        <label>
+
+            Status
+
+        </label>
+
+        <select name="status">
+
+            <option
+                value="published"
+                @selected(old('status', 'published') === 'published')>
+
+                🟢 Published
+
+            </option>
+
+            <option
+                value="draft"
+                @selected(old('status') === 'draft')>
+
+                📝 Draft
+
+            </option>
+
+        </select>
+
+    </div>
+
+
+    {{-- Attachments Upload Dropzone --}}
+
+    <div class="form-group">
+
+        <label>
+
+            📁 Attachments (Images & Files)
+
+        </label>
+
+        @include('attachments.partials.dropzone', ['post' => null])
+
+    </div>
+
+
+    <div class="form-actions">
+
+        <button
+            type="submit"
+            class="btn btn-primary btn-lg">
+
+            💾 Save Post & Attachments
+
+        </button>
+
+    </div>
 
 </form>
 

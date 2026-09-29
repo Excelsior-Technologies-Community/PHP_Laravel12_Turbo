@@ -18,9 +18,12 @@
 
             <div class="post-content">
 
-                <h3>
-                    {{ $post->title }}
+                <h3 class="post-title-link">
+
+                    <a href="{{ route('posts.show', $post) }}">{{ $post->title }}</a>
+
                 </h3>
+
 
                 <p>
 
@@ -28,10 +31,42 @@
 
                 </p>
 
-                <small>
 
-                    Created:
-                    {{ $post->created_at->format('d M Y, h:i A') }}
+                {{-- Attachments Preview --}}
+
+                @if($post->attachments->count())
+
+                    <div class="row-attachments">
+
+                        @foreach($post->attachments->take(4) as $attachment)
+
+                            @if($attachment->file_type === 'image')
+
+                                <img src="{{ $attachment->url }}" class="row-attachment-thumb" title="{{ $attachment->file_name }}" />
+
+                            @else
+
+                                <span class="row-attachment-file" title="{{ $attachment->file_name }}">📄</span>
+
+                            @endif
+
+                        @endforeach
+
+
+                        @if($post->attachments->count() > 4)
+
+                            <span class="row-attachment-more">+{{ $post->attachments->count() - 4 }}</span>
+
+                        @endif
+
+                    </div>
+
+                @endif
+
+
+                <small class="text-muted">
+
+                    Created: {{ $post->created_at ? $post->created_at->format('d M Y, h:i A') : 'N/A' }}
 
                 </small>
 
@@ -40,11 +75,19 @@
 
             <div class="post-meta">
 
-                <span
-                    class="status-badge status-{{ $post->status }}"
-                >
-                    {{ ucfirst($post->status) }}
-                </span>
+                <form method="POST" action="{{ route('posts.toggleStatus', $post) }}" data-turbo="true" style="display:inline;">
+
+                    @csrf
+
+                    @method('PATCH')
+
+                    <button type="submit" class="status-badge status-{{ $post->status }} status-btn" title="Click to toggle status">
+
+                        {{ ucfirst($post->status) }} 🔁
+
+                    </button>
+
+                </form>
 
             </div>
 
@@ -57,7 +100,9 @@
                 href="{{ route('posts.show', $post) }}"
                 class="btn btn-secondary"
             >
-                View
+
+                👁️ View
+
             </a>
 
 
@@ -65,7 +110,9 @@
                 href="{{ route('posts.edit', $post) }}"
                 class="btn btn-warning"
             >
-                Edit
+
+                ✏️ Edit
+
             </a>
 
 
@@ -85,7 +132,9 @@
                     type="submit"
                     class="btn btn-danger"
                 >
-                    Delete
+
+                    🗑️ Delete
+
                 </button>
 
             </form>

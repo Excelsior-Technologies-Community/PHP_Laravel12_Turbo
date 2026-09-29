@@ -1,79 +1,139 @@
-<turbo-frame id="post-{{ $post->id }}">
+@extends('layouts.app')
 
-    <div class="card">
+@section('content')
 
-        <h3>
-            Edit Post
-        </h3>
+<div class="top-bar">
 
-        <form
-            method="POST"
-            action="{{ route('posts.update', $post) }}">
+    <h2>✏️ Edit Post #{{ $post->id }}</h2>
 
-            @csrf
+    <a
+        href="{{ route('posts.index') }}"
+        class="btn btn-secondary">
 
-            @method('PUT')
+        ← Back to Posts
 
-            <label>
-                Title
-            </label>
+    </a>
 
-            <input
-                name="title"
-                value="{{ old('title', $post->title) }}"
-                required
-            >
+</div>
 
-            <label>
-                Description
-            </label>
+<hr>
 
-            <textarea
-                name="description"
-            >{{ old('description', $post->description) }}</textarea>
+<form
+    method="POST"
+    action="{{ route('posts.update', $post) }}"
+    enctype="multipart/form-data"
+    data-turbo="false"
+>
 
-            <label>
-                Status
-            </label>
+    @csrf
 
-            <select name="status">
+    @method('PUT')
 
-                <option
-                    value="published"
-                    @selected(old('status', $post->status) === 'published')>
+    <div class="form-group">
 
-                    Published
+        <label>
 
-                </option>
+            Title
 
-                <option
-                    value="draft"
-                    @selected(old('status', $post->status) === 'draft')>
+        </label>
 
-                    Draft
-
-                </option>
-
-            </select>
-
-            <button
-                type="submit"
-                class="btn btn-primary">
-
-                Update Post
-
-            </button>
-
-            <a
-                href="{{ route('posts.index') }}"
-                class="btn btn-secondary">
-
-                Cancel
-
-            </a>
-
-        </form>
+        <input
+            name="title"
+            value="{{ old('title', $post->title) }}"
+            required
+        >
 
     </div>
 
-</turbo-frame>
+
+    <div class="form-group">
+
+        <label>
+
+            Description
+
+        </label>
+
+        <textarea
+            name="description"
+        >{{ old('description', $post->description) }}</textarea>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>
+
+            Status
+
+        </label>
+
+        <select name="status">
+
+            <option
+                value="published"
+                @selected(old('status', $post->status) === 'published')>
+
+                🟢 Published
+
+            </option>
+
+            <option
+                value="draft"
+                @selected(old('status', $post->status) === 'draft')>
+
+                📝 Draft
+
+            </option>
+
+        </select>
+
+    </div>
+
+
+    {{-- Upload New Attachments --}}
+
+    <div class="form-group">
+
+        <label>
+
+            📁 Upload Attachments (Drag & Drop)
+
+        </label>
+
+        @include('attachments.partials.dropzone', ['post' => $post])
+
+    </div>
+
+
+    {{-- Existing Attachments Grid --}}
+
+    <div class="form-group">
+
+        <label>
+
+            🖼️ Current Attachments
+
+        </label>
+
+        @include('attachments.partials.list', ['post' => $post])
+
+    </div>
+
+
+    <div class="form-actions">
+
+        <button
+            type="submit"
+            class="btn btn-primary btn-lg">
+
+            💾 Update Post
+
+        </button>
+
+    </div>
+
+</form>
+
+@endsection
