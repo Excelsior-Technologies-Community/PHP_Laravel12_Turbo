@@ -1,32 +1,35 @@
-<turbo-stream
-    action="replace"
-    target="post-{{ $post->id }}"
->
+<turbo-stream action="replace" target="post-{{ $post->id }}">
 
     <template>
 
-        @include('posts.partials.row')
+        @include('posts.partials.row', ['post' => $post])
 
     </template>
 
 </turbo-stream>
 
 
-<turbo-stream
-    action="replace"
-    target="turbo-notification"
->
+<turbo-stream action="prepend" target="activity-feed-list">
 
     <template>
 
-        <div
-            id="turbo-notification"
-            class="alert alert-success"
-        >
+        @include('activities.partials.item', ['activity' => $activity])
 
-            Post updated successfully!
+    </template>
 
-        </div>
+</turbo-stream>
+
+
+<turbo-stream action="remove" target="empty-activities-notice">
+
+</turbo-stream>
+
+
+<turbo-stream action="prepend" target="toast-container">
+
+    <template>
+
+        @include('partials.toast', ['message' => $toastMessage, 'type' => 'success'])
 
     </template>
 

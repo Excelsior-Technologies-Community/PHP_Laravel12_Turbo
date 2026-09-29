@@ -1,89 +1,122 @@
-<turbo-frame id="post-{{ $post->id }}">
+@extends('layouts.app')
 
-    <div class="card">
+@section('content')
 
-        <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:flex-start;
-            gap:15px;
-        ">
+<div class="top-bar">
 
-            <div style="flex:1;">
+    <div>
 
-                <h3>
-                    {{ $post->title }}
-                </h3>
+        <h2>{{ $post->title }}</h2>
 
-                <p>
-                    {{ $post->description ?: 'No description provided.' }}
-                </p>
+        <span class="status-badge status-{{ $post->status }}">
 
-                <small style="color:#94a3b8;">
+            {{ ucfirst($post->status) }}
 
-                    Created:
-                    {{ $post->created_at->format('d M Y, h:i A') }}
+        </span>
 
-                </small>
-
-            </div>
-
-            <span class="status-badge status-{{ $post->status }}">
-
-                {{ ucfirst($post->status) }}
-
-            </span>
-
-        </div>
+    </div>
 
 
-        {{-- Post Actions --}}
-        <div style="margin-top:15px;">
+    <div>
 
-            {{-- View Post --}}
-            <a
-                href="{{ route('posts.show', $post) }}"
-                class="btn btn-secondary"
-                data-turbo-frame="_top">
+        <a
+            href="{{ route('posts.index') }}"
+            class="btn btn-secondary">
 
-                View
+            ← Back
 
-            </a>
+        </a>
 
 
-            {{-- Edit Post --}}
-            <a
-                href="{{ route('posts.edit', $post) }}"
-                class="btn btn-warning">
+        <a
+            href="{{ route('posts.edit', $post) }}"
+            class="btn btn-warning">
 
-                Edit
+            ✏️ Edit
 
-            </a>
+        </a>
+
+    </div>
+
+</div>
+
+<hr>
+
+<div class="card">
+
+    <div class="post-detail-content">
+
+        <p class="post-description-full">
+
+            {{ $post->description ?: 'No description provided.' }}
+
+        </p>
 
 
-            {{-- Delete Post --}}
-            <form
-                method="POST"
-                action="{{ route('posts.destroy', $post) }}"
-                style="display:inline;">
+        <div class="post-meta-details text-muted mt-3">
 
-                @csrf
+            <small>
 
-                @method('DELETE')
+                📅 Created: {{ $post->created_at ? $post->created_at->format('M d, Y h:i A') : 'N/A' }} |
 
-                <button
-                    type="submit"
-                    class="btn btn-danger"
-                    onclick="return confirm('Are you sure you want to delete this post?')">
+                🔄 Last Updated: {{ $post->updated_at ? $post->updated_at->format('M d, Y h:i A') : 'N/A' }}
 
-                    Delete
-
-                </button>
-
-            </form>
+            </small>
 
         </div>
 
     </div>
 
-</turbo-frame>
+</div>
+
+
+{{-- Attachments Section --}}
+
+<div class="card mt-4">
+
+    <h3>📁 Post Attachments & Gallery</h3>
+
+
+    {{-- Instant Drag-and-Drop Uploader --}}
+
+    @include('attachments.partials.dropzone', ['post' => $post, 'standalone' => true])
+
+
+    <hr>
+
+
+    {{-- Attachments Gallery List --}}
+
+    @include('attachments.partials.list', ['post' => $post])
+
+</div>
+
+
+{{-- Post Activity History --}}
+
+<div class="card mt-4">
+
+    <h3>📜 Post History & Audit Trail</h3>
+
+
+    <div class="activity-list mt-2">
+
+        @forelse($post->activities as $activity)
+
+            @include('activities.partials.item', ['activity' => $activity])
+
+        @empty
+
+            <div class="empty-activities">
+
+                No activities recorded for this post yet.
+
+            </div>
+
+        @endforelse
+
+    </div>
+
+</div>
+
+@endsection
